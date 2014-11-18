@@ -1,0 +1,44 @@
+{
+  "name": "jt-mailer",
+  "version": "0.0.1",
+  "description": "JT (Juiced Template) Mailer. Uses Jade, LESS, and nodemailer to create easily maintainable email templates",
+  "keywords": [
+    "inline CSS",
+    "email tempalate",
+    "juice template",
+    "juice",
+    "jade",
+    "nodemailer"
+  ],
+  "author": {
+    "name": "Austin Floyd",
+    "email": "texsc98@gmail.com"
+  },
+  "main": "index",
+  "engines": {
+    "node": ">= 0.10.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/afloyd/jt-mailer"
+  },
+  "bugs": {
+    "url": "https://github.com/afloyd/jt-mailer/issues"
+  },
+  "homepage": "https://github.com/afloyd/jt-mailer",
+  "maintainers": [
+    {
+      "name": "Austin Floyd",
+      "email": "texsc98@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "nodemailer": "^1.3.0",
+    "nodemailer-smtp-transport": "^0.1.13",
+    "juice2": "^1.3.0",
+    "jade": "^1.7.0",
+    "less": "^2.0.0",
+    "async": "^0.9.0",
+    "file-magik": "^0.4.0"
+  }
+}
