@@ -48,7 +48,6 @@ exports.init = function init(confOpts, cb) {
 		if (err) return cb(err);
 
 		// Shortcut method, requires nodemailer-smtp-transport package be installed
-		logger.log('conf.smtp:\n', conf.smtp);
 		transporter = nodemailer.createTransport(conf.smtp);
 		cb(null, exports);
 	});
