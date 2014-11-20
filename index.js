@@ -39,12 +39,13 @@ exports.init = function init(confOpts, cb) {
 	logger = require('./lib/logger')(conf);
 
 	// Log options without auth settings
-	var logOpts = _.cloneDeep(conf);
+	var logOpts = _.cloneDeep(conf),
+	    start = Date.now();
 	delete logOpts.smtp.auth;
 
-	logger.log('email opts:', logOpts);
-	return compilers.init(conf, function (err) {
-		logger.log('Compilers completed');
+	logger.log('Initializing jt-mailer\n email opts:', logOpts);
+	return compilers.init(conf, function(err) {
+		logger.log('jt-mailer completed! Took ' + ((Date.now() - start) / 1000) + ' ms');
 		if (err) return cb(err);
 
 		// Shortcut method, requires nodemailer-smtp-transport package be installed
