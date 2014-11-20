@@ -45,7 +45,7 @@ exports.init = function init(confOpts, cb) {
 
 	logger.log('Initializing jt-mailer\n email opts:', logOpts);
 	return compilers.init(conf, function(err) {
-		logger.log('jt-mailer completed! Took ' + ((Date.now() - start) / 1000) + ' ms');
+		logger.log('jt-mailer completed! Took ' + ((Date.now() - start) / 1000) + ' s');
 		if (err) return cb(err);
 
 		// Shortcut method, requires nodemailer-smtp-transport package be installed
