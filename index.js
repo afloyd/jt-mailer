@@ -23,11 +23,13 @@
  */
 
 var conf,
-	transporter,
-	logger,
-	_ = require('lodash'),
-	nodemailer = require('nodemailer'),
-	compilers = require('./lib/compilers');
+transporter,
+logger,
+_ = require('lodash'),
+nodemailer = require('nodemailer'),
+compilers = require('./lib/compilers');
+
+exports.initialized = false;
 
 exports.init = function init(confOpts, cb) {
 	if (!cb) {
@@ -50,6 +52,7 @@ exports.init = function init(confOpts, cb) {
 
 		// Shortcut method, requires nodemailer-smtp-transport package be installed
 		transporter = nodemailer.createTransport(conf.smtp);
+		exports.initialized = true;
 		cb(null, exports);
 	});
 };
