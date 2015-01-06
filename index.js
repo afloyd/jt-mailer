@@ -78,7 +78,7 @@ exports.sendMail = function sendMail(opts, cb) {
 			logger.log('Processed email html:\n', renderedHtml);
 		}
 
-		if (!conf.sendEmail || !opts.sendEmail) {
+		if ((!conf.sendEmail && !opts.sendEmail) || !opts.sendEmail) {
 			logger.log('Email configuration to not send');
 			return cb(null, {}, renderedHtml);
 		}
