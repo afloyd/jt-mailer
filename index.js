@@ -74,11 +74,11 @@ exports.sendMail = function sendMail(opts, cb) {
 	compilers.renderTemplate(templateOpts.name, templateOpts.locals, function(err, renderedHtml) {
 		if (err) return cb(err);
 
-		if (!conf.isPROD && (conf.logHtml || !conf.sendEmail)) {
-			logger.log('Processed email:', renderedHtml);
+		if (!conf.isPROD && conf.logHtml) {
+			logger.log('Processed email html:\n', renderedHtml);
 		}
 
-		if (!conf.sendEmail) {
+		if (!conf.sendEmail || !opts.sendEmail) {
 			logger.log('Email configuration to not send');
 			return cb(null, {}, renderedHtml);
 		}
