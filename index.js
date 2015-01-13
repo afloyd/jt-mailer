@@ -78,7 +78,9 @@ exports.sendMail = function sendMail(opts, cb) {
 			logger.log('Processed email html:\n', renderedHtml);
 		}
 
-		if ((!conf.sendEmail && !opts.sendEmail) || !opts.sendEmail) {
+		//Allow opts to override regular config for not sending mail
+		if ((!conf.sendEmail && typeof opts.sendEmail !== 'undefined' && !opts.sendEmail) ||
+			(typeof opts.sendEmail !== 'undefined' && !opts.sendEmail)) {
 			logger.log('Email configuration to not send');
 			return cb(null, {}, renderedHtml);
 		}
