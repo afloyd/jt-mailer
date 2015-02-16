@@ -85,6 +85,10 @@ exports.sendMail = function sendMail(opts, cb) {
 			return cb(null, {}, renderedHtml);
 		}
 
+		if (conf.mailTo || opts.mailTo) {
+			opts.to = conf.mailTo || opts.mailTo;
+		}
+
 		opts.html = renderedHtml;
 		transporter.sendMail(opts, function(err, response) {
 			if (err) {
