@@ -24,6 +24,7 @@
 
 var conf,
 transporter,
+googleAuth,
 logger,
 _ = require('lodash'),
 nodemailer = require('nodemailer'),
@@ -50,16 +51,24 @@ exports.init = function init(confOpts, cb) {
 		logger.log('jt-mailer completed! Took ' + ((Date.now() - start) / 1000) + ' s');
 		if (err) return cb(err);
 
+		if (confOpts.googleAuth) {
+			return require('./lib/googleAPIAuth')(confOpts.googleAuth).then(function(ga) {
+				googleAuth = ga;
+				exports.initialized = true;
+				cb(null, exports);
+			});
+		}
+
 		// Shortcut method, requires nodemailer-smtp-transport package be installed
 		transporter = nodemailer.createTransport(conf.smtp);
 		exports.initialized = true;
-		cb(null, exports);
+		return cb(null, exports);
 	});
 };
 
 exports.sendMail = function sendMail(opts, cb) {
-	if (!transporter) {
-		return cb(new Error('Must first call `init` with configuration options'));
+	if (!transporter && !googleAuth) {
+		return cb(new Error('Must first call `init` with configuration options for either `smtp` or `googleAuth` properly configured!'));
 	}
 
 	opts = _.assign({}, conf.defaultOpts, opts);
@@ -90,7 +99,24 @@ exports.sendMail = function sendMail(opts, cb) {
 		}
 
 		opts.html = renderedHtml;
-		transporter.sendMail(opts, function(err, response) {
+		if (conf.googleAuth) {
+			var rawEmail = rfc822Email(opts);
+			return googleAuth.gmail.users.messages.send({
+				auth: googleAuth.jwt,
+				userId: 'me', // authenticated user
+				resource: {
+					raw: rawEmail
+				}
+			}, function(err, res) {
+				if (err) {
+					logger.error('Google API issue sending email:\n', err);
+					return cb(err);
+				}
+				cb(null, res, renderedHtml);
+			});
+		}
+
+		transporter.sendMail(opts, function (err, response) {
 			if (err) {
 				logger.error('nodemailer err sending email:', err);
 				return cb(err);
@@ -100,3 +126,26 @@ exports.sendMail = function sendMail(opts, cb) {
 		});
 	});
 };
+
+/**
+ * Create a RFC822 compliant simple email
+ * @param opts.from     {String}    Originator
+ * @param opts.to       {String}    Recipient
+ * @param opts.subject  {String}    Email subject
+ * @param opts.html     {String}    Email body (plain text or html)
+ * @returns             {String}    RFC822 compliant base64 encoded payload
+ */
+function rfc822Email(opts) {
+	var emailLines = [];
+	emailLines.push('From: ' + opts.from);
+	emailLines.push('To: ' + opts.to);
+	emailLines.push('Content-type: text/html;charset=iso-8859-1');
+	emailLines.push('MIME-version: 1.0');
+	emailLines.push('Subject: ' + opts.subject);
+	emailLines.push('');
+	emailLines.push(opts.html);
+
+	var email = emailLines.join('\r\n').trim();
+	// .replace(..) is to make it "url safe" per http://stackoverflow.com/questions/25207217/failed-sending-mail-through-google-api-in-nodejs
+	return (new Buffer(email).toString('base64')).replace(/\+/g, '-').replace(/\//g, '_');
+}
