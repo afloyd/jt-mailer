@@ -44,9 +44,10 @@ exports.init = function init(confOpts, cb) {
 	// Log options without auth settings
 	var logOpts = _.cloneDeep(conf),
 	    start = Date.now();
-	delete logOpts.smtp.auth;
+	if (logOpts.smtp) delete logOpts.smtp.auth;
 
-	logger.log('Initializing jt-mailer\n email opts:', logOpts);
+	var debugLog = logger.debug ? logger.debug : logger.log;
+	debugLog('Initializing jt-mailer\n email opts:', logOpts);
 	return compilers.init(conf, function(err) {
 		logger.log('jt-mailer completed! Took ' + ((Date.now() - start) / 1000) + ' s');
 		if (err) return cb(err);
