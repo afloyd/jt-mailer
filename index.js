@@ -73,6 +73,8 @@ exports.sendMail = function sendMail(opts, cb) {
 	}
 
 	opts = _.assign({}, conf.defaultOpts, opts);
+	var juiceOpts = opts.juice;
+	delete opts.juice;
 
 	var templateOpts = opts.template;
 	if (!templateOpts.name) {
@@ -81,7 +83,7 @@ exports.sendMail = function sendMail(opts, cb) {
 		return cb(new Error('Email template "' + templateOpts.name + '" not found!'));
 	}
 
-	compilers.renderTemplate(templateOpts.name, templateOpts.locals, function(err, renderedHtml) {
+	compilers.renderTemplate(templateOpts.name, templateOpts.locals, juiceOpts, function(err, renderedHtml) {
 		if (err) return cb(err);
 
 		if (!conf.isPROD && conf.logHtml) {
