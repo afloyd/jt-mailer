@@ -10,6 +10,7 @@ JT (Juiced Template) Mailer. Uses Jade, LESS, Juice and nodemailer to create eas
     mailTo: null, // send all API emails to this address (for dev/testing), if null sends to address specified in individual request
     templatesPath: 'services/email/templates', // path to jade templates folder
     stylesPath: 'services/email/styles', // path to styles folder
+    onlyLogErrors: true, // Don't output .debug & .log messages from jt-mailer 
     defaultOpts: {
         from: 'foo@bar.com', // default from email for all emails generated
         to: 'hey@you.com', // default to email for all emails generated (probably not useful in most cases)

@@ -46,14 +46,13 @@ exports.init = function init(confOpts, cb) {
 	    start = Date.now();
 	if (logOpts.smtp) delete logOpts.smtp.auth;
 
-	var debugLog = logger.debug ? logger.debug : logger.log;
-	debugLog('Initializing jt-mailer\n email opts:', logOpts);
+	logger.debug('Initializing jt-mailer\n email opts:', logOpts);
 	return compilers.init(conf, function(err) {
 		logger.log('jt-mailer completed! Took ' + ((Date.now() - start) / 1000) + ' s');
 		if (err) return cb(err);
 
-		if (confOpts.googleAuth) {
-			return require('./lib/googleAPIAuth')(confOpts.googleAuth).then(function(ga) {
+		if (conf.googleAuth) {
+			return require('./lib/googleAPIAuth')({conf: conf, googleAuth: confOpts.googleAuth}).then(function(ga) {
 				googleAuth = ga;
 				exports.initialized = true;
 				cb(null, exports);

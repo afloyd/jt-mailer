@@ -1,6 +1,6 @@
 {
   "name": "jt-mailer",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "JT (Juiced Template) Mailer. Uses Jade, LESS, and nodemailer to create easily maintainable email templates",
   "keywords": [
     "inline CSS",
